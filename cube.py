@@ -81,6 +81,7 @@ def corner_permutation_move(pieces, move):
     return pieces
 
 def corner_orientation_move(pieces, move):
+    """Returns the new orientation vector after applying the given move."""
     move_index = moveIndex // 3
     power = move % 3
     for i in range(pow):
