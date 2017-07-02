@@ -2,7 +2,7 @@ import numpy
 
 class MoveTable:
     def __init__(self, size, do_move):
-        self.table = numpy.empty([18, size])
+        self.table = numpy.empty((18, size))
 
         for i in range(size):
             for move in range(18):
