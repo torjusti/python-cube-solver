@@ -1,3 +1,5 @@
+import numpy
+
 def index_from_orientation(pieces, flip_count):
     """
     Computes an unique index in the range 0 <= index < the number of possible
@@ -59,8 +61,7 @@ def permutation_from_index(index, affected_pieces, size):
     """Returns the original permutation from a permutation index."""
     permutation = [-1 for i in range(size)]
     factor = 1 + size - len(affected_pieces)
-    base = size
-    for i in range(len(affected_pieces) - 1): base *= factor + i
+    base = size * numpy.prod([factor + i for i in range(len(affected_pieces) - 1)])
 
     indexes = []
 
