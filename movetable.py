@@ -2,9 +2,6 @@ import numpy
 
 class MoveTable:
     def __init__(self, size, do_move):
-        self.create_table(size, do_move)
-
-    def create_table(self, size, do_move):
         self.table = numpy.empty([18, size])
 
         for i in range(size):
