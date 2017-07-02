@@ -5,6 +5,16 @@ import collections
 
 class PruningTable:
     def __init__(self, move_tables):
+        """
+        Creates a new pruning table. A pruning table is an array where each
+        index represents the distance from the cube represented by the index
+        to one of the solved indexes as represented by the move tables - if
+        more than one move table is provided, the distance is that to where
+        all move tables are in a solved position. Thus, you can create move
+        tables where you check for example for both orientation and permutation
+        of the EOLine edge pieces. Balancing the number of move tables in a
+        pruning table is difficult, as large pruning tables generate slowly.
+        """
         size = numpy.prod([table.get_size() for table in move_tables])
         self.table = numpy.full((1, math.ceil(size / 2) * 2), -1)
         powers = numpy.ones([len(move_tables)])
@@ -43,12 +53,14 @@ class PruningTable:
             depth += 1
 
     def set_value(self, index, value):
+        """Packs two pruning values into one byte."""
         if (index & 1) == 0:
             self.table[index // 2] &= 0xf0 | value
         else:
             self.table[index // 2] &= 0xf0 | (value << 4)
 
     def get_value(self, index):
+        """Unpacks a pruning value from the pruning table."""
         if (index & 1) == 0:
             return self.table[index // 2] & 0x0f
         else:
