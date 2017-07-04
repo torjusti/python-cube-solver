@@ -15,9 +15,11 @@ class PruningTable:
         of the EOLine edge pieces. Balancing the number of move tables in a
         pruning table is difficult, as large pruning tables generate slowly.
         """
-        size = numpy.prod([table.get_size() for table in move_tables])
-        self.table = numpy.full((1, math.ceil(size / 2) * 2), -1)
-        powers = numpy.ones([len(move_tables)])
+        size = 1
+        for table in move_tables:
+            size *= table['move_table'].get_size()
+        self.table = [-1 for i in range(math.ceil(size / 2) * 2)]
+        powers = [1 for i in range(len(move_tables))]
 
         for i in range(1, len(move_tables)):
             powers[i] = move_tables[i - 1].move_table.get_size() * powers[i - 1]
@@ -25,7 +27,7 @@ class PruningTable:
         depth = 0
         done = 0
 
-        permutations = itertools.product(lambda table: table.solved_indexes, move_tables)
+        permutations = itertools.product(data['solved_indexes'] for data in move_tables)
 
         for permutation in permutations:
             index = sum(powers[i] * piece for i, piece in enumerate(permutation))
@@ -34,17 +36,17 @@ class PruningTable:
 
         while done != size:
             for i in range(size):
-                if self.get_value(index) != depth: continue
+                if self.get_value(i) != depth: continue
 
                 for move in range(18):
                     indexes = collections.deque()
                     current_index = i
 
-                    for j in range(len(powers) - 1, 0, -1):
-                        indexes.appendleft(move_tables[j].move_table.do_move(current_index // powers[j], move))
+                    for j in range(len(powers) - 1, -1, -1):
+                        indexes.appendleft(move_tables[j]['move_table'].do_move(int(current_index / powers[j]), move))
                         current_index = current_index % powers[j]
 
-                    position = sum(powers[i] * index for i, index in enumerate(indexes))
+                    position = sum(powers[j] * index for j, index in enumerate(indexes))
 
                     if self.get_value(position) == 0x0f:
                         self.set_value(position, depth + 1)
@@ -57,7 +59,7 @@ class PruningTable:
         if (index & 1) == 0:
             self.table[index // 2] &= 0xf0 | value
         else:
-            self.table[index // 2] &= 0xf0 | (value << 4)
+            self.table[index // 2] &= 0x0f | (value << 4)
 
     def get_value(self, index):
         """Unpacks a pruning value from the pruning table."""

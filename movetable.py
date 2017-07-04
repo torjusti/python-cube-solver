@@ -1,5 +1,3 @@
-import numpy
-
 class MoveTable:
     def __init__(self, size, do_move):
         """
@@ -7,20 +5,20 @@ class MoveTable:
         moves and the columns are indexes. Each cell in the matrix
         represents the resulting index after applying a move to an index.
         """
-        self.table = numpy.empty((18, size))
+        self.table = [[-1 for i in range(18)] for j in range(size)]
 
         for i in range(size):
             for move in range(18):
-                if move not in table[:, i]:
+                if self.table[i][move] < 0:
                     result = do_move(i, move)
-                    self.table[i, move] = result
+                    self.table[i][move] = int(result)
                     inverse = move - 2 * (move % 3) + 2
-                    self.table[result, inverse] = i
+                    self.table[result][inverse] = i
 
     def do_move(self, index, move):
         """Returns the new index after applying move to index."""
-        return self.table[index, move]
+        return self.table[index][move]
 
-    def get_size():
+    def get_size(self):
         """Returns the number of indexes in the move table."""
-        return self.table.shape[1]
+        return len(self.table)

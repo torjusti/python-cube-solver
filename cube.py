@@ -16,7 +16,7 @@ def rotate_right(pieces, move):
     """
     updated_pieces = list(pieces)
     updated_pieces[move[0]] = pieces[move[-1]]
-    for i in range(1, len(elems)):
+    for i in range(1, len(move)):
         updated_pieces[move[i]] = pieces[move[i - 1]]
     return updated_pieces
 
@@ -28,8 +28,8 @@ def edge_permutation_move(pieces, move):
     """
     move_vector = edge_moves[move // 3]
     power = move % 3
-    for i in range(pow + 1):
-        pieces = rotate_right(pieces, move)
+    for i in range(power + 1):
+        pieces = rotate_right(pieces, move_vector)
     return pieces
 
 def edge_orientation_move(pieces, move):
@@ -43,7 +43,7 @@ def edge_orientation_move(pieces, move):
 
     updated_pieces = edge_permutation_move(pieces, move)
 
-    if (move_index == 0 or move_index == 3) and pow % 2 == 0:
+    if (move_index == 0 or move_index == 3) and power % 2 == 0:
         for i in range(4):
             updated_pieces[move_vector[i]] = (updated_pieces[move_vector[i]] + 1) % 2
 
@@ -84,7 +84,7 @@ def corner_orientation_move(pieces, move):
     """Returns the new orientation vector after applying the given move."""
     move_index = moveIndex // 3
     power = move % 3
-    for i in range(pow):
+    for i in range(power):
         cycle = list(pieces)
         for j in range(8):
             from_piece = corner_permutation_moves[move_index][j]

@@ -1,20 +1,20 @@
 import re
 
 def validate_sequence(sequence):
-  if len(sequence.trim()) == 0: return false
+  if len(sequence.strip()) == 0: return false
 
   def check(part):
-    if len(part.trim()) == 0: return true
-    if !re.match("^[FRUBLD]{1}[2']?", part): return false
+    if len(part.strip()) == 0: return true
+    if not re.match("^[FRUBLD]{1}[2']?", part): return false
     return true
 
-  return all(check(part) for part in sequence.trim().split(' '))
+  return all(check(part) for part in sequence.strip().split(' '))
 
-def parse_scramble():
+def parse_scramble(scramble):
     moves = []
 
-    for move in scramble.trim().split(' '):
-        if len(move.trim()) > 0:
+    for move in scramble.strip().split(' '):
+        if len(move.strip()) > 0:
             moveNum = 'FRUBLD'.index(move[0])
             power = 0
 

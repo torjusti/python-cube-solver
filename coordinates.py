@@ -1,5 +1,3 @@
-import numpy
-
 def index_from_orientation(pieces, flip_count):
     """
     Computes an unique index in the range 0 <= index < the number of possible
@@ -9,33 +7,33 @@ def index_from_orientation(pieces, flip_count):
     index = 0
     for i in range(len(pieces) - 1):
         index = flip_count * index + pieces[i]
-    return index
+    return int(index)
 
 def index_from_edge_orientation(edges):
     # Edges may be flipped in 2 ways.
-    return get_index_from_orientation(edges, 2)
+    return index_from_orientation(edges, 2)
 
 def index_from_corner_orientation(corners):
     # Corners can be twisted in 3 ways.
-    return get_index_from_orientation(corners, 3)
+    return index_from_orientation(corners, 3)
 
 def orientation_from_index(index, num_pieces, num_flips):
     """Returns the original orientation from an index."""
     orientation = []
     parity = 0
     for i in range(num_pieces - 2, -1, -1):
-        ori = index % num_fllips
-        orientation[i] = ori
+        ori = index % num_flips
+        orientation.append(ori)
         parity += ori
         index //= num_flips
-    orientation[-1] = (num_flips - parity % num_flips) % num_flips
+    orientation.append((num_flips - parity % num_flips) % num_flips)
     return orientation
-
-def corner_orientation_from_index(index):
-    return orientation_from_index(index, 8, 3)
 
 def edge_orientation_from_index(index):
     return orientation_from_index(index, 12, 2)
+
+def corner_orientation_from_index(index):
+    return orientation_from_index(index, 8, 3)
 
 def index_from_permutation(permutation, affected_pieces):
     """
@@ -59,19 +57,21 @@ def index_from_permutation(permutation, affected_pieces):
 
 def permutation_from_index(index, affected_pieces, size):
     """Returns the original permutation from a permutation index."""
-    permutation = [-1 for i in range(size)]
     factor = 1 + size - len(affected_pieces)
-    base = size * numpy.prod([factor + i for i in range(len(affected_pieces) - 1)])
+    base = size
+    for i in range(len(affected_pieces) - 1):
+        base *= factor + i
 
     indexes = []
 
     for i in range(len(affected_pieces) - 1):
-        base /= factor + i
-        value = index // base
+        base //= factor + i
+        indexes.append(index // base)
         index = index % base
-        indexes[i] = value
 
     indexes.append(index)
+
+    permutation = [-1 for i in range(size)]
 
     for i in range(len(indexes)):
         for j in range(i + 1, len(indexes)):
