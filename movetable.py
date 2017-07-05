@@ -1,9 +1,14 @@
 import numpy
 
 class MoveTable:
-    def __init__(self, size, do_move):
-        """
-        Create a new move table, which is a matrix where the rows are
+    def __init__(self, size, do_move, default_index, solved_indexes):
+        """Initializes a new move table."""
+        self.default_index = default_index
+        self.solved_indexes = solved_indexes
+        self.create_move_table(size, do_move)
+
+    def create_move_table(self, size, do_move):
+        """Create a new move table, which is a matrix where the rows are
         moves and the columns are indexes. Each cell in the matrix
         represents the resulting index after applying a move to an index.
         """

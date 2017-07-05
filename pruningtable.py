@@ -5,9 +5,13 @@ import collections
 import numpy
 
 class PruningTable:
-    def __init__(self, move_tables):
-        """
-        Creates a new pruning table. A pruning table is an array where each
+    def __init__(self, move_tables, move_table_indexes):
+        """Initializes a new pruning table."""
+        self.move_table_indexes = move_table_indexes
+        self.create_move_table(move_tables)
+
+    def create_move_table(self, move_tables):
+        """Creates a new pruning table. A pruning table is an array where each
         index represents the distance from the cube represented by the index
         to one of the solved indexes as represented by the move tables - if
         more than one move table is provided, the distance is that to where
@@ -16,7 +20,7 @@ class PruningTable:
         of the EOLine edge pieces. Balancing the number of move tables in a
         pruning table is difficult, as large pruning tables generate slowly.
         """
-        size = numpy.prod([table['move_table'].get_size() for table in move_tables])
+        size = numpy.prod([table.get_size() for table in move_tables])
         self.table = [-1 for i in range(math.ceil(size / 2) * 2)]
         powers = numpy.ones(len(move_tables), dtype=numpy.int32)
 
@@ -26,7 +30,7 @@ class PruningTable:
         depth = 0
         done = 0
 
-        permutations = itertools.product(data['solved_indexes'] for data in move_tables)
+        permutations = itertools.product(table.solved_indexes for table in move_tables)
 
         for permutation in permutations:
             index = sum(powers[i] * piece for i, piece in enumerate(permutation))
@@ -42,7 +46,7 @@ class PruningTable:
                     current_index = i
 
                     for j in range(len(powers) - 1, -1, -1):
-                        indexes.appendleft(move_tables[j]['move_table'].do_move(int(current_index / powers[j]), move))
+                        indexes.appendleft(move_tables[j].do_move(int(current_index / powers[j]), move))
                         current_index = current_index % powers[j]
 
                     position = sum(powers[j] * index for j, index in enumerate(indexes))

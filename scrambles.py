@@ -1,16 +1,18 @@
 import re
 
 def validate_sequence(sequence):
-  if len(sequence.strip()) == 0: return false
+    """Checks if we are able to parse the given algorithm."""
+    if len(sequence.strip()) == 0: return false
 
-  def check(part):
-    if len(part.strip()) == 0: return true
-    if not re.match("^[FRUBLD]{1}[2']?", part): return false
-    return true
+    def check(part):
+        if len(part.strip()) == 0: return true
+        if not re.match("^[FRUBLD]{1}[2']?", part): return false
+        return true
 
-  return all(check(part) for part in sequence.strip().split(' '))
+    return all(check(part) for part in sequence.strip().split(' '))
 
 def parse_scramble(scramble):
+    """Parses the given algorithm."""
     moves = []
 
     for move in scramble.strip().split(' '):
@@ -29,6 +31,9 @@ def parse_scramble(scramble):
     return moves
 
 def format_move_sequence(moves):
+    """Takes a sequence of moves as stored internally and returns a
+    properly formatted sequence of moves.
+    """
     sequence = ''
 
     first = True
