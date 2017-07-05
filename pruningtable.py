@@ -2,6 +2,7 @@ import numpy
 import math
 import itertools
 import collections
+import numpy
 
 class PruningTable:
     def __init__(self, move_tables):
@@ -15,11 +16,9 @@ class PruningTable:
         of the EOLine edge pieces. Balancing the number of move tables in a
         pruning table is difficult, as large pruning tables generate slowly.
         """
-        size = 1
-        for table in move_tables:
-            size *= table['move_table'].get_size()
+        size = numpy.prod([table['move_table'].get_size() for table in move_tables])
         self.table = [-1 for i in range(math.ceil(size / 2) * 2)]
-        powers = [1 for i in range(len(move_tables))]
+        powers = numpy.ones(len(move_tables), dtype=numpy.int32)
 
         for i in range(1, len(move_tables)):
             powers[i] = move_tables[i - 1].move_table.get_size() * powers[i - 1]

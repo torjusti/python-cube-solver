@@ -1,3 +1,5 @@
+import numpy
+
 def index_from_orientation(pieces, flip_count):
     """
     Computes an unique index in the range 0 <= index < the number of possible
@@ -19,14 +21,14 @@ def index_from_corner_orientation(corners):
 
 def orientation_from_index(index, num_pieces, num_flips):
     """Returns the original orientation from an index."""
-    orientation = []
+    orientation = numpy.empty(num_pieces, dtype=numpy.int8)
     parity = 0
     for i in range(num_pieces - 2, -1, -1):
         ori = index % num_flips
-        orientation.append(ori)
+        orientation[i] = ori
         parity += ori
         index //= num_flips
-    orientation.append((num_flips - parity % num_flips) % num_flips)
+    orientation[-1] = (num_flips - parity % num_flips) % num_flips
     return orientation
 
 def edge_orientation_from_index(index):
@@ -58,20 +60,15 @@ def index_from_permutation(permutation, affected_pieces):
 def permutation_from_index(index, affected_pieces, size):
     """Returns the original permutation from a permutation index."""
     factor = 1 + size - len(affected_pieces)
-    base = size
-    for i in range(len(affected_pieces) - 1):
-        base *= factor + i
+    base = size * numpy.prod([factor + i for i in range(len(affected_pieces) - 1)])
+    indexes = numpy.empty(len(affected_pieces), dtype=numpy.int32)
 
-    indexes = []
-
-    for i in range(len(affected_pieces) - 1):
+    for i in range(len(affected_pieces)):
         base //= factor + i
-        indexes.append(index // base)
+        indexes[i] = index // base
         index = index % base
 
-    indexes.append(index)
-
-    permutation = [-1 for i in range(size)]
+    permutation = numpy.full(size, -1)
 
     for i in range(len(indexes)):
         for j in range(i + 1, len(indexes)):

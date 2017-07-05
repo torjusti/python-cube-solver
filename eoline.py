@@ -6,3 +6,5 @@ class EOLineSolver(Solver):
         self.add_simple_edge_permutation_table([5, 7])
 
 solver = EOLineSolver()
+
+print(solver.solve('F R D2'))
