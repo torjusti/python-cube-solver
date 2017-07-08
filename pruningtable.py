@@ -43,19 +43,16 @@ class PruningTable:
                 if self.get_value(i) != depth: continue
 
                 for move in range(18):
-                    indexes = collections.deque()
+                    position = 0
                     current_index = i
 
                     for j in range(len(powers) - 1, -1, -1):
-                        indexes.appendleft(move_tables[j].do_move(int(current_index / powers[j]), move))
+                        position += powers[j] * move_tables[j].do_move(int(current_index / powers[j]), move)
                         current_index = current_index % powers[j]
-
-                    position = sum(powers[j] * index for j, index in enumerate(indexes))
 
                     if self.get_value(position) == 0x0f:
                         self.set_value(position, depth + 1)
                         done += 1
-                        print(done)
 
             depth += 1
 

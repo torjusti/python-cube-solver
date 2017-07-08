@@ -38,7 +38,7 @@ class GenericSolver:
             'size': 2 ** 11,
             'do_move': edge_orientation_move,
             'default_index': 0,
-            'solved_indexes': 0 if len(pieces) == 12 else get_correct_edge_orientations(2 ** 11, pieces),
+            'solved_indexes': [0] if len(pieces) == 12 else get_correct_edge_orientations(2 ** 11, pieces),
         }, pruning_table)
 
     def add_simple_corner_orientation_table(self, pieces, pruning_table=True):
@@ -47,7 +47,7 @@ class GenericSolver:
             'size': 3 ** 7,
             'do_move': corner_orientation_move,
             'default_index': 0,
-            'solved_indexes': 0 if len(pieces) == 8 else get_correct_corner_orientations(3 ** 7, pieces),
+            'solved_indexes': [0] if len(pieces) == 8 else get_correct_corner_orientations(3 ** 7, pieces),
         }, pruning_table)
 
     def add_simple_edge_permutation_table(self, pieces, pruning_table=True):
