@@ -21,16 +21,17 @@ class PruningTable:
         pruning table is difficult, as large pruning tables generate slowly.
         """
         size = numpy.prod([table.get_size() for table in move_tables])
-        self.table = [-1 for i in range(math.ceil(size / 2) * 2)]
+        self.table = numpy.full(math.ceil(size / 2), -1, dtype=numpy.int32)
         powers = numpy.ones(len(move_tables), dtype=numpy.int32)
 
         for i in range(1, len(move_tables)):
-            powers[i] = move_tables[i - 1].move_table.get_size() * powers[i - 1]
+            powers[i] = move_tables[i - 1].get_size() * powers[i - 1]
 
         depth = 0
         done = 0
 
-        permutations = itertools.product(table.solved_indexes for table in move_tables)
+        solved_indexes = [table.solved_indexes for table in move_tables]
+        permutations = itertools.product(*solved_indexes)
 
         for permutation in permutations:
             index = sum(powers[i] * piece for i, piece in enumerate(permutation))
@@ -54,6 +55,7 @@ class PruningTable:
                     if self.get_value(position) == 0x0f:
                         self.set_value(position, depth + 1)
                         done += 1
+                        print(done)
 
             depth += 1
 

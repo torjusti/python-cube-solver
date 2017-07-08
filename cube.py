@@ -61,7 +61,7 @@ corner_permutation_moves = [
 ]
 
 # Corner orientation moves are stored similarly to the permutation moves.
-corner_permutation_moves = [
+corner_orientation_moves = [
     [1, 2, 0, 0, 2, 1, 0, 0], # F
     [2, 0, 0, 1, 1, 0, 0, 2], # R
     [0, 0, 0, 0, 0, 0, 0, 0], # U
@@ -77,16 +77,16 @@ def corner_permutation_move(pieces, move):
     for i in range(power + 1):
         cycle = list(pieces)
         for j in range(8):
-            pieces[j] = round[move_vector[j]]
+            pieces[j] = cycle[move_vector[j]]
     return pieces
 
 def corner_orientation_move(pieces, move):
     """Returns the new orientation vector after applying the given move."""
-    move_index = moveIndex // 3
+    move_index = move // 3
     power = move % 3
     for i in range(power):
         cycle = list(pieces)
         for j in range(8):
             from_piece = corner_permutation_moves[move_index][j]
-            pices[j] = (cycle[from_piece] + corner_orientation_moves[move_index][j]) % 3
+            pieces[j] = (cycle[from_piece] + corner_orientation_moves[move_index][j]) % 3
     return pieces

@@ -9,7 +9,7 @@ def get_correct_edge_orientations(size, pieces):
     for i in range(size):
         flips = edge_orientation_from_index(i)
         if all(flips[piece] == 0 for piece in flips):
-            indexes.push(i)
+            indexes.append(i)
     return indexes
 
 def get_correct_corner_orientations(size, pieces):
@@ -20,5 +20,5 @@ def get_correct_corner_orientations(size, pieces):
     for i in range(size):
         twists = corner_orientation_from_index(i)
         if all(twists[piece] == 0 for piece in twists):
-            indexes.push(i)
+            indexes.append(i)
     return indexes

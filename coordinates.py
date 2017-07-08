@@ -68,7 +68,7 @@ def permutation_from_index(index, affected_pieces, size):
         indexes[i] = index // base
         index = index % base
 
-    permutation = numpy.full(size, -1)
+    permutation = numpy.full(size, -1, dtype=numpy.int8)
 
     for i in range(len(indexes)):
         for j in range(i + 1, len(indexes)):
@@ -77,7 +77,7 @@ def permutation_from_index(index, affected_pieces, size):
 
         permutation[indexes[i]] = affected_pieces[i]
 
-    return permutation
+    return list(permutation)
 
 def edge_permutation_from_index(index, affected_pieces):
     return permutation_from_index(index, affected_pieces, 12)

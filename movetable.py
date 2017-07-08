@@ -16,7 +16,7 @@ class MoveTable:
 
         for i in range(size):
             for move in range(18):
-                if self.table[i, move] < 0:
+                if self.table[i][move] < 0:
                     result = do_move(i, move)
                     self.table[i, move] = result
                     inverse = move - 2 * (move % 3) + 2

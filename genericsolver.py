@@ -26,7 +26,7 @@ class GenericSolver:
 
     def add_table(self, settings, pruning_table=True):
         """Adds a new move table to the solver."""
-        solved_indexes = settings.get('solved_indexes', settings['default_index'])
+        solved_indexes = settings.get('solved_indexes', [settings['default_index']])
         move_table = MoveTable(settings['size'], settings['do_move'], settings['default_index'], solved_indexes)
         self.move_tables.append(move_table)
         if not pruning_table: return len(self.move_tables) - 1
@@ -34,7 +34,7 @@ class GenericSolver:
 
     def add_simple_edge_orientation_table(self, pieces, pruning_table=True):
         """Adds edges which should be oriented."""
-        self.add_table({
+        return self.add_table({
             'size': 2 ** 11,
             'do_move': edge_orientation_move,
             'default_index': 0,
@@ -43,7 +43,7 @@ class GenericSolver:
 
     def add_simple_corner_orientation_table(self, pieces, pruning_table=True):
         """Adds corners which should be oriented."""
-        self.add_table({
+        return self.add_table({
             'size': 3 ** 7,
             'do_move': corner_orientation_move,
             'default_index': 0,
@@ -52,7 +52,7 @@ class GenericSolver:
 
     def add_simple_edge_permutation_table(self, pieces, pruning_table=True):
         """Adds edges which should be permuted."""
-        self.add_table({
+        return self.add_table({
             'size': math.factorial(12) // math.factorial(12 - len(pieces)),
             'do_move': lambda index, move: edge_permutation_move(index, move, pieces),
             'default_index': index_from_permutation([i for i in range(12)], pieces),
@@ -60,7 +60,7 @@ class GenericSolver:
 
     def add_simple_corner_permutation_table(self, pieces, pruning_table=True):
         """Adds corners which should be permuted."""
-        self.add_table({
+        return self.add_table({
             'size': math.factorial(8) // math.factorial(8 - len(pieces)),
             'do_move': lambda index, move: corner_permutation_move(index, move, pieces),
             'default_index': index_from_permutation([i for i in range(8)], pieces),
@@ -74,7 +74,7 @@ class GenericSolver:
             powers = [1]
 
             for i in range(1, len(pruning_table.move_table_indexes)):
-                powers.append(self.move_tables[pruning_table.move_table_indexes[i - 1]].move_table.get_size() * powers[i - 1])
+                powers.append(self.move_tables[pruning_table.move_table_indexes[i - 1]].get_size() * powers[i - 1])
 
             index = sum(indexes[table_index] * powers[i] for i, table_index in enumerate(pruning_table.move_table_indexes))
 
